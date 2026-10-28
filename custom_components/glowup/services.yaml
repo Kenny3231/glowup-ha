@@ -1,0 +1,70 @@
+set_widget:
+  fields:
+    widget:
+      required: true
+      example: garage
+      selector: {text: {}}
+    ttl:
+      example: 3600
+      selector: {number: {min: 0, max: 604800, unit_of_measurement: s, mode: box}}
+    text: {selector: {text: {}}}
+    icon:
+      example: "mdi:garage-open"
+      selector: {text: {}}
+    color: {selector: {text: {}}}
+    value: {selector: {text: {}}}
+    unit: {selector: {text: {}}}
+    label: {selector: {text: {}}}
+    secondary: {selector: {text: {}}}
+    trend:
+      selector: {select: {options: [up, down, flat]}}
+    items:
+      example: '[{"text": "Dentiste", "secondary": "14:30"}]'
+      selector: {object: {}}
+    caption: {selector: {text: {}}}
+    camera_entity:
+      selector: {entity: {domain: camera}}
+    device_id:
+      selector: {device: {integration: glowup, multiple: true}}
+clear_widget:
+  fields:
+    widget:
+      required: true
+      selector: {text: {}}
+    device_id:
+      selector: {device: {integration: glowup, multiple: true}}
+patch_config:
+  fields:
+    patch:
+      required: true
+      example: '{"theme": {"accent": "#FFB74D"}}'
+      selector: {object: {}}
+    device_id:
+      selector: {device: {integration: glowup, multiple: true}}
+set_layout:
+  fields:
+    layout:
+      required: true
+      selector: {select: {options: [epure, widgets]}}
+    device_id:
+      selector: {device: {integration: glowup, multiple: true}}
+toast:
+  fields:
+    text:
+      required: true
+      selector: {text: {}}
+    icon:
+      example: "mdi:bell"
+      selector: {text: {}}
+    seconds:
+      selector: {number: {min: 1, max: 30, unit_of_measurement: s, mode: box}}
+    device_id:
+      selector: {device: {integration: glowup, multiple: true}}
+launch_app:
+  fields:
+    package:
+      required: true
+      example: com.netflix.ninja
+      selector: {text: {}}
+    device_id:
+      selector: {device: {integration: glowup, multiple: true}}

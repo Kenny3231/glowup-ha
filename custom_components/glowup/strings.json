@@ -1,0 +1,110 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "GlowUp TV",
+        "description": "Address of the TV on your network.",
+        "data": {"host": "Host", "port": "Port"}
+      },
+      "zeroconf_confirm": {
+        "title": "GlowUp TV found",
+        "description": "Pair the TV at {host}?"
+      },
+      "pair": {
+        "title": "Pairing",
+        "description": "On the TV: Settings, then Pair a device. Enter the 6-digit code shown.",
+        "data": {"code": "Code"}
+      },
+      "reauth_confirm": {
+        "title": "Pair again",
+        "description": "The token was revoked. On the TV: Settings, then Pair a device, and enter the new code.",
+        "data": {"code": "Code"}
+      }
+    },
+    "error": {
+      "cannot_connect": "The TV does not answer.",
+      "wrong_code": "Wrong code.",
+      "pairing_blocked": "Too many attempts, try again later.",
+      "unknown": "Unexpected error."
+    },
+    "abort": {
+      "already_configured": "This TV is already configured.",
+      "reauth_successful": "Pairing renewed."
+    }
+  },
+  "entity": {
+    "binary_sensor": {"online": {"name": "Online"}},
+    "sensor": {"version": {"name": "Version"}},
+    "select": {
+      "layout": {
+        "name": "Layout",
+        "state": {"epure": "Minimal", "widgets": "Widgets"}
+      },
+      "wallpaper": {"name": "Wallpaper"}
+    }
+  },
+  "services": {
+    "set_widget": {
+      "name": "Set widget",
+      "description": "Push content to a widget on the TV.",
+      "fields": {
+        "widget": {"name": "Widget", "description": "Widget id."},
+        "ttl": {"name": "TTL", "description": "Seconds before it expires (0 = never)."},
+        "text": {"name": "Text", "description": "Chip text."},
+        "icon": {"name": "Icon", "description": "Icon, for example mdi:bell."},
+        "color": {"name": "Color", "description": "Chip color."},
+        "value": {"name": "Value", "description": "Stat or progress value."},
+        "unit": {"name": "Unit", "description": "Stat unit."},
+        "label": {"name": "Label", "description": "Stat or progress label."},
+        "secondary": {"name": "Secondary", "description": "Secondary text."},
+        "trend": {"name": "Trend", "description": "up, down or flat."},
+        "items": {"name": "Items", "description": "List items (text, secondary, icon)."},
+        "caption": {"name": "Caption", "description": "Image caption."},
+        "camera_entity": {"name": "Camera", "description": "Camera whose snapshot becomes the image."},
+        "device_id": {"name": "TV", "description": "TV(s) to target; all by default."}
+      }
+    },
+    "clear_widget": {
+      "name": "Clear widget",
+      "description": "Remove a widget's pushed content.",
+      "fields": {
+        "widget": {"name": "Widget", "description": "Widget id."},
+        "device_id": {"name": "TV", "description": "TV(s) to target; all by default."}
+      }
+    },
+    "patch_config": {
+      "name": "Patch config",
+      "description": "Apply a JSON Merge Patch to the TV config.",
+      "fields": {
+        "patch": {"name": "Patch", "description": "The patch."},
+        "device_id": {"name": "TV", "description": "TV(s) to target; all by default."}
+      }
+    },
+    "set_layout": {
+      "name": "Set layout",
+      "description": "Switch the home layout.",
+      "fields": {
+        "layout": {"name": "Layout", "description": "epure or widgets."},
+        "device_id": {"name": "TV", "description": "TV(s) to target; all by default."}
+      }
+    },
+    "toast": {
+      "name": "Show message",
+      "description": "Show a short message on the TV.",
+      "fields": {
+        "text": {"name": "Text", "description": "Message."},
+        "icon": {"name": "Icon", "description": "Icon, for example mdi:bell."},
+        "seconds": {"name": "Seconds", "description": "Duration, 1 to 30."},
+        "device_id": {"name": "TV", "description": "TV(s) to target; all by default."}
+      }
+    },
+    "launch_app": {
+      "name": "Launch app",
+      "description": "Launch an app (the TV must be on the home screen).",
+      "fields": {
+        "package": {"name": "Package", "description": "Android package name."},
+        "device_id": {"name": "TV", "description": "TV(s) to target; all by default."}
+      }
+    }
+  }
+}

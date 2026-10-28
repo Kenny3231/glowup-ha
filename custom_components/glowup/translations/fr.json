@@ -1,0 +1,54 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "GlowUp TV",
+        "description": "Adresse de la TV sur ton réseau.",
+        "data": {"host": "Adresse", "port": "Port"}
+      },
+      "zeroconf_confirm": {
+        "title": "GlowUp TV détectée",
+        "description": "Appairer la TV à l'adresse {host} ?"
+      },
+      "pair": {
+        "title": "Appairage",
+        "description": "Sur la TV : Paramètres, puis Appairer un appareil. Saisis le code à 6 chiffres affiché.",
+        "data": {"code": "Code"}
+      },
+      "reauth_confirm": {
+        "title": "Appairer à nouveau",
+        "description": "Le token a été révoqué. Sur la TV : Paramètres, puis Appairer un appareil, et saisis le nouveau code.",
+        "data": {"code": "Code"}
+      }
+    },
+    "error": {
+      "cannot_connect": "La TV ne répond pas.",
+      "wrong_code": "Code incorrect.",
+      "pairing_blocked": "Trop d'essais, réessaie plus tard.",
+      "unknown": "Erreur inattendue."
+    },
+    "abort": {
+      "already_configured": "Cette TV est déjà configurée.",
+      "reauth_successful": "Appairage renouvelé."
+    }
+  },
+  "entity": {
+    "binary_sensor": {"online": {"name": "En ligne"}},
+    "sensor": {"version": {"name": "Version"}},
+    "select": {
+      "layout": {
+        "name": "Mise en page",
+        "state": {"epure": "Épuré", "widgets": "Widgets"}
+      },
+      "wallpaper": {"name": "Fond"}
+    }
+  },
+  "services": {
+    "set_widget": {"name": "Définir un widget", "description": "Pousse du contenu dans un widget de la TV."},
+    "clear_widget": {"name": "Effacer un widget", "description": "Retire le contenu poussé d'un widget."},
+    "patch_config": {"name": "Modifier la config", "description": "Applique un JSON Merge Patch à la config de la TV."},
+    "set_layout": {"name": "Changer la mise en page", "description": "Change la mise en page de l'accueil."},
+    "toast": {"name": "Afficher un message", "description": "Affiche un court message sur la TV."},
+    "launch_app": {"name": "Lancer une app", "description": "Lance une app (la TV doit être sur l'accueil)."}
+  }
+}

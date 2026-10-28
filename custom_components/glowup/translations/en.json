@@ -1,0 +1,54 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "GlowUp TV",
+        "description": "Address of the TV on your network.",
+        "data": {"host": "Host", "port": "Port"}
+      },
+      "zeroconf_confirm": {
+        "title": "GlowUp TV found",
+        "description": "Pair the TV at {host}?"
+      },
+      "pair": {
+        "title": "Pairing",
+        "description": "On the TV: Settings, then Pair a device. Enter the 6-digit code shown.",
+        "data": {"code": "Code"}
+      },
+      "reauth_confirm": {
+        "title": "Pair again",
+        "description": "The token was revoked. On the TV: Settings, then Pair a device, and enter the new code.",
+        "data": {"code": "Code"}
+      }
+    },
+    "error": {
+      "cannot_connect": "The TV does not answer.",
+      "wrong_code": "Wrong code.",
+      "pairing_blocked": "Too many attempts, try again later.",
+      "unknown": "Unexpected error."
+    },
+    "abort": {
+      "already_configured": "This TV is already configured.",
+      "reauth_successful": "Pairing renewed."
+    }
+  },
+  "entity": {
+    "binary_sensor": {"online": {"name": "Online"}},
+    "sensor": {"version": {"name": "Version"}},
+    "select": {
+      "layout": {
+        "name": "Layout",
+        "state": {"epure": "Minimal", "widgets": "Widgets"}
+      },
+      "wallpaper": {"name": "Wallpaper"}
+    }
+  },
+  "services": {
+    "set_widget": {"name": "Set widget", "description": "Push content to a widget on the TV."},
+    "clear_widget": {"name": "Clear widget", "description": "Remove a widget's pushed content."},
+    "patch_config": {"name": "Patch config", "description": "Apply a JSON Merge Patch to the TV config."},
+    "set_layout": {"name": "Set layout", "description": "Switch the home layout."},
+    "toast": {"name": "Show message", "description": "Show a short message on the TV."},
+    "launch_app": {"name": "Launch app", "description": "Launch an app (the TV must be on the home screen)."}
+  }
+}

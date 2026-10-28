@@ -1,0 +1,17 @@
+{
+  "domain": "glowup",
+  "name": "GlowUp TV",
+  "codeowners": [
+    "@Kenny3231"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/Kenny3231/glowup-ha",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/Kenny3231/glowup-ha/issues",
+  "requirements": [],
+  "version": "0.1.0",
+  "zeroconf": [
+    "_glowup._tcp.local."
+  ]
+}

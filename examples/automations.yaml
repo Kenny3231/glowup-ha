@@ -1,0 +1,196 @@
+# Automatisations d'exemple pour GlowUp TV (Home Assistant 2024.10 ou plus récent).
+#
+# À coller dans automations.yaml, ou une par une dans l'éditeur (mode YAML).
+# Les entités marquées « ← à remplacer » sont des exemples : mets les tiennes.
+# Les widgets (meteo, garage, lave_linge, lumieres, impression_3d) doivent être déclarés dans la config de la TV,
+# et placés dans une zone de la mise en page (voir docs/glowup/03-config.md du launcher).
+#
+# Maintien : un widget a une durée de vie (ttl). Les déclencheurs « keepalive » toutes les 10 minutes le renvoient ;
+# l'intégration ne l'envoie vraiment qu'une fois la moitié du ttl écoulée. Si Home Assistant s'arrête, l'info
+# disparaît seule de la TV au lieu de rester périmée.
+
+- id: glowup_meteo
+  alias: "GlowUp TV · météo au-dessus de l'heure"
+  triggers:
+    - trigger: state
+      entity_id: weather.maison                     # ← à remplacer
+    - trigger: time_pattern
+      minutes: /10
+    - trigger: homeassistant
+      event: start
+  variables:
+    meteo: weather.maison                           # ← à remplacer (le même)
+    etat: "{{ states(meteo) }}"
+    libelles:
+      clear-night: Nuit claire
+      cloudy: Nuageux
+      exceptional: Alerte météo
+      fog: Brouillard
+      hail: Grêle
+      lightning: Orage
+      lightning-rainy: Orage
+      partlycloudy: Éclaircies
+      pouring: Averses
+      rainy: Pluie
+      snowy: Neige
+      snowy-rainy: Neige fondue
+      sunny: Soleil
+      windy: Vent
+      windy-variant: Vent
+    icones:
+      clear-night: mdi:weather-night
+      cloudy: mdi:weather-cloudy
+      exceptional: mdi:alert
+      fog: mdi:weather-fog
+      hail: mdi:weather-hail
+      lightning: mdi:weather-lightning
+      lightning-rainy: mdi:weather-lightning
+      partlycloudy: mdi:weather-partly-cloudy
+      pouring: mdi:weather-pouring
+      rainy: mdi:weather-rainy
+      snowy: mdi:weather-snowy
+      snowy-rainy: mdi:weather-snowy
+      sunny: mdi:weather-sunny
+      windy: mdi:weather-windy
+      windy-variant: mdi:weather-windy
+  conditions:
+    - "{{ etat not in ['unavailable', 'unknown'] }}"
+  actions:
+    - action: glowup.set_widget
+      data:
+        widget: meteo
+        text: "{{ state_attr(meteo, 'temperature') | float(0) | round(0) | int }}° · {{ libelles.get(etat, etat) }}"
+        icon: "{{ icones.get(etat, 'mdi:weather-partly-cloudy') }}"
+        ttl: 1800
+
+- id: glowup_garage
+  alias: "GlowUp TV · porte du garage ouverte"
+  triggers:
+    - trigger: state
+      entity_id: cover.garage                       # ← à remplacer (ou un binary_sensor de porte)
+    - trigger: time_pattern
+      minutes: /10
+      id: keepalive
+  variables:
+    ouverte: "{{ states('cover.garage') in ['open', 'opening', 'on'] }}"   # ← à remplacer (le même)
+  actions:
+    - if: "{{ ouverte }}"
+      then:
+        - action: glowup.set_widget
+          data: {widget: garage, text: "Porte du garage ouverte", icon: "mdi:garage-open", color: warning, ttl: 1800}
+      else:
+        - if: "{{ trigger.id != 'keepalive' }}"
+          then:
+            - action: glowup.clear_widget
+              data: {widget: garage}
+
+- id: glowup_lave_linge
+  alias: "GlowUp TV · lave-linge"
+  triggers:
+    - trigger: state
+      entity_id: sensor.lave_linge_restant          # ← à remplacer (minutes restantes)
+    - trigger: time_pattern
+      minutes: /10
+      id: keepalive
+  variables:
+    restant: "{{ states('sensor.lave_linge_restant') | int(0) }}"                # ← à remplacer
+    progression: "{{ states('sensor.lave_linge_progression') | int(0) }}"        # ← à remplacer (0 à 100)
+  actions:
+    - choose:
+        - conditions: "{{ restant > 0 }}"
+          sequence:
+            - action: glowup.set_widget
+              data:
+                widget: lave_linge
+                label: Lave-linge
+                value: "{{ progression }}"
+                text: "fin dans {{ restant }} min"
+                ttl: 1800
+        - conditions: "{{ trigger.id != 'keepalive' and trigger.from_state is not none and trigger.from_state.state | int(0) > 0 }}"
+          sequence:
+            # Le cycle vient de finir : « terminé » reste 45 minutes, puis disparaît seul.
+            - action: glowup.set_widget
+              data: {widget: lave_linge, label: Lave-linge, value: 100, text: terminé, ttl: 2700}
+            - action: glowup.toast
+              data: {text: "Le lave-linge a terminé", icon: "mdi:washing-machine", seconds: 8}
+
+- id: glowup_lumieres
+  alias: "GlowUp TV · lumières restées allumées le soir"
+  triggers:
+    - trigger: state
+      entity_id: [light.salon, light.cuisine, light.garage]   # ← à remplacer
+    - trigger: time
+      at: "23:00:00"
+    - trigger: time
+      at: "06:00:00"
+    - trigger: time_pattern
+      minutes: /10
+      id: keepalive
+  variables:
+    surveillees: [light.salon, light.cuisine, light.garage]   # ← à remplacer (les mêmes)
+    allumees: "{{ surveillees | select('is_state', 'on') | map('state_attr', 'friendly_name') | list }}"
+    tard: "{{ now().hour >= 23 or now().hour < 6 }}"
+  actions:
+    - if: "{{ tard and allumees | count > 0 }}"
+      then:
+        - action: glowup.set_widget
+          data:
+            widget: lumieres
+            text: "Encore allumé : {{ allumees | join(', ') }}"
+            icon: "mdi:lightbulb-on"
+            color: warning
+            ttl: 1800
+      else:
+        - if: "{{ trigger.id != 'keepalive' }}"
+          then:
+            - action: glowup.clear_widget
+              data: {widget: lumieres}
+
+- id: glowup_impression_3d
+  alias: "GlowUp TV · impression 3D"
+  triggers:
+    - trigger: state
+      entity_id: [sensor.imprimante_3d_etat, sensor.imprimante_3d_progression]   # ← à remplacer
+    - trigger: time_pattern
+      minutes: /10
+      id: keepalive
+  variables:
+    etat: "{{ states('sensor.imprimante_3d_etat') | lower }}"                    # ← à remplacer
+    pct: "{{ states('sensor.imprimante_3d_progression') | int(0) }}"            # ← à remplacer (0 à 100)
+    fin: "{{ as_timestamp(states('sensor.imprimante_3d_fin'), none) }}"        # ← à remplacer (heure de fin), facultatif
+  actions:
+    - choose:
+        - conditions: "{{ etat in ['printing', 'running', 'impression'] }}"
+          sequence:
+            - action: glowup.set_widget
+              data:
+                widget: impression_3d
+                label: Impression 3D
+                value: "{{ pct }}"
+                text: "{{ 'fin à ' ~ (fin | timestamp_custom('%H:%M')) if fin else pct ~ ' %' }}"
+                ttl: 1800
+        - conditions: "{{ etat in ['finished', 'complete', 'terminé'] and trigger.id != 'keepalive' }}"
+          sequence:
+            - action: glowup.set_widget
+              data: {widget: impression_3d, label: Impression 3D, value: 100, text: terminée, ttl: 3600}
+            - action: glowup.toast
+              data: {text: "Impression 3D terminée", icon: "mdi:printer-3d", seconds: 8}
+      default:
+        - if: "{{ trigger.id != 'keepalive' and etat not in ['finished', 'complete', 'terminé'] }}"
+          then:
+            - action: glowup.clear_widget
+              data: {widget: impression_3d}
+
+- id: glowup_mise_en_page
+  alias: "GlowUp TV · Widgets le jour, Épuré le soir"
+  triggers:
+    - trigger: time
+      at: "07:00:00"
+      id: jour
+    - trigger: time
+      at: "21:00:00"
+      id: soir
+  actions:
+    - action: glowup.set_layout
+      data:
+        layout: "{{ 'widgets' if trigger.id == 'jour' else 'epure' }}"
