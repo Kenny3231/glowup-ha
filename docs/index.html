@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GlowUp TV · Guide Aura</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Palette tirée du thème Aura de glowup-tv : fond #050A18, bulles #080C1A, alerte #F2B24C, secondaire #C9D2E3, accent #7FD8FF */
+:root{--bg:#050A18;--card:rgba(8,12,26,.72);--line:rgba(255,255,255,.16);--text:#EEF2FA;--muted:#C9D2E3;--accent:#7FD8FF;--warn:#F2B24C;--ok:#7FD1B9;--alert:#FF6B6B;--code:#03060F}
+:root[data-theme=light]{--bg:#F4F6FB;--card:#fff;--line:rgba(5,10,24,.14);--text:#0B1226;--muted:#43506B;--accent:#0A6C94;--warn:#A9680B;--ok:#1F7A63;--alert:#B3261E;--code:#EAEEF7}
+@media(prefers-color-scheme:light){:root:not([data-theme=dark]){--bg:#F4F6FB;--card:#fff;--line:rgba(5,10,24,.14);--text:#0B1226;--muted:#43506B;--accent:#0A6C94;--warn:#A9680B;--ok:#1F7A63;--alert:#B3261E;--code:#EAEEF7}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:400 17px/1.6 Outfit,system-ui,sans-serif}
+main{max-width:1040px;margin:0 auto;padding:0 16px 80px}
+h1,h2{font-family:Fraunces,Georgia,serif;font-weight:300;letter-spacing:-.01em;margin:0}
+h1{font-size:clamp(40px,8vw,76px);line-height:1.05;margin:56px 0 12px}
+h2{font-size:clamp(26px,4vw,36px);margin:64px 0 8px}
+h3{font-weight:500;font-size:18px;margin:28px 0 6px}
+p{margin:8px 0;color:var(--muted)}
+a{color:var(--accent)}
+code,pre{font-family:ui-monospace,Consolas,monospace;font-size:14px}
+code{background:var(--code);padding:1px 6px;border-radius:6px;color:var(--text)}
+pre{background:var(--code);border:1px solid var(--line);border-radius:14px;padding:14px 16px;overflow:auto;margin:10px 0;color:var(--text);position:relative}
+pre code{background:none;padding:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.kpi b{display:block;font:300 56px/1 Fraunces,serif;color:var(--accent)}
+.kpi span{color:var(--muted);font-size:15px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td,tr:last-child th{border-bottom:0}
+th{font-weight:500;color:var(--text);white-space:nowrap}
+td{color:var(--muted)}
+.tag{display:inline-block;padding:3px 12px;border-radius:99px;border:1px solid var(--line);font-size:13px;color:var(--text)}
+.tag.aura{border-color:var(--accent);color:var(--accent)}
+nav{position:sticky;top:0;z-index:5;display:flex;gap:6px;flex-wrap:wrap;padding:10px 0;background:linear-gradient(var(--bg) 70%,transparent)}
+nav a{padding:6px 14px;border:1px solid var(--line);border-radius:99px;text-decoration:none;color:var(--muted);font-size:15px}
+nav a:hover,nav a:focus-visible{color:var(--text);border-color:var(--accent);outline:none}
+.note{border:1px solid var(--warn);padding:12px 16px;background:var(--card);border-radius:12px;color:var(--muted);margin:14px 0}
+/* Aperçu façon Aura */
+.stage{position:relative;aspect-ratio:16/9;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:linear-gradient(160deg,#1a2a52,#0b1430 55%,#050A18)}
+.stage::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 45%,rgba(5,10,24,.9));pointer-events:none}
+.clock{position:absolute;top:5%;left:0;right:0;text-align:center;font:200 clamp(40px,9vw,92px)/1 Fraunces,serif;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+.clock small{display:block;font:300 clamp(11px,1.6vw,16px) Outfit,sans-serif;color:#C9D2E3;margin-top:4px}
+.bubbles{position:absolute;right:4%;top:6%;width:38%;display:flex;flex-direction:column;gap:1.4%;z-index:2}
+.bubble{display:flex;align-items:center;gap:8px;background:rgba(8,12,26,.62);border:1px solid rgba(255,255,255,.16);border-radius:99px;padding:5px 12px 5px 5px;font-size:clamp(10px,1.4vw,13px);color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bubble i{flex:none;width:clamp(18px,2.4vw,24px);aspect-ratio:1;border-radius:50%;background:color-mix(in srgb,var(--c,#7FD8FF) 28%,transparent);border:2px solid var(--c,#7FD8FF)}
+.bubble.alert i{background:#F2B24C;border-color:#F2B24C}
+.bars{position:absolute;left:6%;right:6%;bottom:4%;z-index:2;display:flex;flex-direction:column;gap:6px}
+.bar{display:grid;grid-template-columns:22% 1fr auto;gap:10px;align-items:center;font-size:clamp(9px,1.2vw,12px);color:#fff}
+.bar .trk{height:6px;border-radius:9px;background:rgba(255,255,255,.18);overflow:hidden}
+.bar .trk b{display:block;height:100%;background:linear-gradient(90deg,#7FD8FF,#fff);border-radius:9px}
+.bar em{font-style:normal;color:#C9D2E3}
+.toast{position:absolute;left:50%;bottom:22%;transform:translateX(-50%);z-index:3;background:rgba(8,12,26,.85);border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:6px 16px;font-size:clamp(10px,1.4vw,14px);color:#fff}
+/* Générateur */
+form{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+label{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--muted)}
+input,select,textarea{font:inherit;color:var(--text);background:var(--code);border:1px solid var(--line);border-radius:10px;padding:9px 12px;min-height:44px}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button{font:inherit;cursor:pointer;color:var(--text);background:transparent;border:1px solid var(--line);border-radius:10px;padding:8px 14px;min-height:44px}
+button:hover{border-color:var(--accent)}
+button.on{border-color:var(--accent);color:var(--accent)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0 6px}
+.copy{position:absolute;top:8px;right:8px;min-height:32px;padding:4px 12px;font-size:13px}
+.hide{display:none}
+@media(max-width:560px){.bubbles{width:55%}.stage{aspect-ratio:4/3}}
+</style>
+</head>
+<body>
+<main>
+<h1>GlowUp TV</h1>
+<p style="font-size:20px;max-width:640px">Tout ce que Home Assistant, ou un petit script JS, peut lire et envoyer sur l'écran d'accueil de la TV. Pensé pour la mise en page <b style="color:var(--accent)">Aura</b>, avec les deux autres (Épuré, Widgets) en comparaison.</p>
+
+<nav aria-label="Sections">
+<a href="#capacite">Combien de notifications</a><a href="#envoyer">Ce que je peux envoyer</a><a href="#generateur">Générateur</a><a href="#lire">Ce que je peux lire</a><a href="#actions">Actions</a><a href="#js">Le script JS</a><a href="#limites">Limites</a>
+</nav>
+
+<h2 id="capacite">Combien de notifications en même temps ?</h2>
+<p>Une « notification » est un <b>widget</b> déclaré dans la config de la TV, placé dans une <b>zone</b> de la mise en page. Chaque zone a un maximum : au-delà, la TV refuse la config (<code>400</code>), elle ne tronque pas en silence. À cela s'ajoute le <b>toast</b>, message passager sur l'accueil.</p>
+
+<div class="grid" style="margin-top:14px">
+<div class="card kpi"><b>9</b><span><span class="tag aura">Aura</span> 6 bulles + 2 lignes de progression + 1 météo sous l'heure</span></div>
+<div class="card kpi"><b>6</b><span>Épuré : 1 pastille haut + 2 au-dessus de l'heure + 3 dessous</span></div>
+<div class="card kpi"><b>12</b><span>Widgets : 3 sous l'heure + 4 panneau gauche + 4 panneau droit + 1 météo inline</span></div>
+<div class="card kpi"><b>+1</b><span>toast (1 à 30 s), en plus, sur l'accueil seulement</span></div>
+</div>
+
+<div class="tw" style="margin-top:16px"><table>
+<tr><th>Mise en page</th><th>Zone</th><th>Max</th><th>Types acceptés</th><th>Rendu</th></tr>
+<tr><td><span class="tag aura">Aura</span></td><th>bubbles</th><td>6</td><td>chip, stat, progress, list (1er élément)</td><td>colonne de bulles à droite, alerte en premier avec disque ambre</td></tr>
+<tr><td><span class="tag aura">Aura</span></td><th>bottom_bars</th><td>2</td><td>progress seulement</td><td>1 ligne (60 px) ou 2 lignes (52 px) en bas, avec libellé, détail, %, texte</td></tr>
+<tr><td><span class="tag aura">Aura</span></td><th>clock.inline_weather</th><td>1</td><td>un widget (météo)</td><td>texte simple sous l'heure, hors bulles</td></tr>
+<tr><td>Épuré</td><th>top_bar</th><td>1</td><td>info courte</td><td>pastille en haut à droite</td></tr>
+<tr><td>Épuré</td><th>clock_above</th><td>2</td><td>puces</td><td>ligne au-dessus de l'heure</td></tr>
+<tr><td>Épuré / Widgets</td><th>clock_below</th><td>3</td><td>puces</td><td>ligne sous l'heure et la date</td></tr>
+<tr><td>Widgets</td><th>panel_left</th><td>4</td><td>stats, listes, progression</td><td>colonne à gauche</td></tr>
+<tr><td>Widgets</td><th>panel_right</th><td>4</td><td>idem</td><td>colonne à droite</td></tr>
+</table></div>
+<p>Un widget ne se place qu'<b>à un seul endroit par mise en page</b>. Quand son <code>ttl</code> est écoulé, <code>on_expire</code> décide : <code>hide</code> le masque, <code>stale</code> le grise avec l'heure de dernière mise à jour, <code>keep</code> le laisse. En Aura, ce qui ne tient pas dans les 440 px de haut de la colonne reste dehors.</p>
+<p>Le nombre de widgets <i>différents</i> que tu peux déclarer n'est pas plafonné par la doc : c'est le placement par zone qui limite ce qui s'affiche.</p>
+
+<h3>Aperçu Aura (simulation)</h3>
+<div class="stage" role="img" aria-label="Aperçu de la mise en page Aura avec bulles et lignes de progression">
+<div class="clock">21:48<small>jeudi 30 octobre · 14° Nuageux</small></div>
+<div class="bubbles" id="pv-bubbles"></div>
+<div class="bars" id="pv-bars"></div>
+<div class="toast hide" id="pv-toast"></div>
+</div>
+<p style="font-size:14px">L'aperçu suit le générateur plus bas : modifie un champ pour le voir changer. Simulation visuelle, pas un rendu exact de la TV.</p>
+
+<h2 id="envoyer">Les informations que je peux envoyer</h2>
+<p>Le contenu doit correspondre au <code>type</code> du widget déclaré dans la config. Champ commun : <code>ttl</code> (secondes, <code>0</code> = jamais, 604 800 au plus). Un champ inconnu est refusé.</p>
+<div class="tw"><table>
+<tr><th>Type</th><th>Champs</th><th>Exemple</th></tr>
+<tr><th>chip</th><td><code>text</code>, <code>icon</code>, <code>color</code></td><td>« Porte du garage ouverte », « Colis livré »</td></tr>
+<tr><th>stat</th><td><code>value</code>, <code>unit</code>, <code>label</code>, <code>secondary</code>, <code>trend</code> (<code>up</code> <code>down</code> <code>flat</code>)</td><td>21,4 ° · Salon · Humidité 48 %</td></tr>
+<tr><th>progress</th><td><code>label</code>, <code>value</code> (0 à 100), <code>text</code>, <code>detail</code> <span class="tag aura">Aura</span></td><td>Bambu 1 · 62 % · reste 1 h 34 · « couche 142/230 »</td></tr>
+<tr><th>list</th><td><code>items</code> : <code>[{text, secondary, icon}]</code> (<code>max_items</code> de la config)</td><td>Les prochains rendez-vous. En Aura : seul le 1er est affiché</td></tr>
+<tr><th>image</th><td><code>camera_entity</code> (HA) ou <code>data</code> base64, <code>caption</code></td><td>Instantané de caméra, 1 Mo au plus, jamais une URL</td></tr>
+</table></div>
+<h3>Couleurs et icônes</h3>
+<p><code>color</code> : <span style="color:var(--accent)">accent</span>, <span style="color:var(--ok)">ok</span>, <span style="color:var(--warn)">warning</span> (disque ambre plein en Aura, passe en premier), <span style="color:var(--alert)">alert</span>, <span>muted</span>, ou <code>#RRGGBB</code>. <code>icon</code> : <code>mdi:…</code> parmi 163 icônes embarquées (domotique et réglages, liste dans <code>tools/glowup_icons.py</code> de glowup-tv) : le sous-ensemble est limité, vérifie la liste avant d'utiliser une icône rare.</p>
+
+<h3>Autres choses que je peux envoyer</h3>
+<div class="tw"><table>
+<tr><th>Toast</th><td><code>text</code>, <code>icon</code>, <code>seconds</code> (1 à 30)</td></tr>
+<tr><th>Config (Merge Patch)</th><td>couleur d'accent, <code>layout</code>, <code>scrim</code> (0 à 100), <code>apps_autohide_s</code>, horloge 24 h / secondes, dock… Un tableau envoyé remplace le tableau entier.</td></tr>
+<tr><th>Mise en page</th><td><code>aura</code>, <code>epure</code> ou <code>widgets</code></td></tr>
+<tr><th>Fond d'écran</th><td>images via <code>POST /wallpapers</code> (multipart), choix par <code>theme.wallpaper.ids</code>. Fond temporaire : pas encore.</td></tr>
+<tr><th>Lancer une app</th><td><code>package</code> présent dans <code>/apps</code> (accueil affiché seulement)</td></tr>
+</table></div>
+
+<h2 id="generateur">Générateur</h2>
+<p>Remplis le formulaire : tu obtiens l'action Home Assistant, la commande du script JS, le <code>curl</code> et le JSON brut.</p>
+<div class="card">
+<div class="tabs" id="kinds" role="tablist" aria-label="Type d'envoi"></div>
+<form id="f" autocomplete="off"></form>
+<div class="tabs" id="outTabs" role="tablist" aria-label="Format de sortie"></div>
+<pre><button class="copy" id="copy" type="button">Copier</button><code id="out"></code></pre>
+<p style="font-size:14px">Rien n'est envoyé à la TV depuis cette page : le navigateur ne peut pas l'appeler (voir Limites).</p>
+</div>
+
+<h2 id="lire">Les informations que je peux lire</h2>
+<div class="tw"><table>
+<tr><th><code>GET /health</code></th><td>la TV répond (sans token)</td></tr>
+<tr><th><code>GET /info</code></th><td>version, <code>boot_id</code> (change au redémarrage du launcher), appareil, Android, profil, écran, mises en page, capacités</td></tr>
+<tr><th><code>GET /config</code></th><td>config complète + <code>revision</code> : mise en page, zones, widgets déclarés, thème, horloge, dock</td></tr>
+<tr><th><code>GET /state</code></th><td>photo de l'état poussé (widgets affichés), pour déboguer</td></tr>
+<tr><th><code>GET /apps</code></th><td>apps lançables : <code>package</code>, <code>label</code></td></tr>
+<tr><th><code>GET /wallpapers</code></th><td>fonds stockés sur la TV</td></tr>
+</table></div>
+<h3>Côté Home Assistant : 4 entités par TV</h3>
+<div class="tw"><table>
+<tr><th>En ligne</th><td>binary_sensor : la TV répond (vérifié toutes les 60 s)</td></tr>
+<tr><th>Version</th><td>sensor de diagnostic : version du launcher</td></tr>
+<tr><th>Mise en page</th><td>select : lit et change la mise en page (options = <code>layouts</code> de <code>/info</code>)</td></tr>
+<tr><th>Fond</th><td>select : fond parmi ceux de la TV</td></tr>
+</table></div>
+
+<h2 id="actions">Les actions</h2>
+<div class="tw"><table>
+<tr><th>Service HA</th><th>API TV</th><th>Effet</th></tr>
+<tr><th><code>glowup.set_widget</code></th><td><code>PUT /state/widgets/{id}</code></td><td>remplit un widget (<code>widget</code>, contenu, <code>ttl</code>)</td></tr>
+<tr><th><code>glowup.clear_widget</code></th><td><code>DELETE /state/widgets/{id}</code></td><td>vide un widget, il se masque</td></tr>
+<tr><th><code>glowup.set_layout</code></th><td><code>PATCH /config</code></td><td>change de mise en page</td></tr>
+<tr><th><code>glowup.patch_config</code></th><td><code>PATCH /config</code></td><td>modification partielle de la config</td></tr>
+<tr><th><code>glowup.toast</code></th><td><code>POST /actions/toast</code></td><td>message passager</td></tr>
+<tr><th><code>glowup.launch_app</code></th><td><code>POST /actions/launch</code></td><td>ouvre une app (accueil affiché)</td></tr>
+<tr><th>(script JS seulement)</th><td><code>POST /actions/home</code></td><td>revient à l'accueil</td></tr>
+</table></div>
+<div class="note">Dans l'interface HA, le sélecteur de <code>glowup.set_layout</code> ne propose que <code>epure</code> et <code>widgets</code> (voir <code>services.yaml</code>) : pour Aura, tape <code>aura</code> en mode YAML ou utilise l'entité « Mise en page ». À vérifier sur ta TV : la liste <code>layouts</code> de <code>/info</code> dit ce qu'elle accepte.</div>
+
+<h2 id="js">Le script JS</h2>
+<p><code>tools/glowup.mjs</code> : un client et un CLI Node 18+, sans dépendance. Il parle directement à la TV. La commande <code>status</code> montre, pour la mise en page active, combien d'emplacements sont affichés, placés et au maximum.</p>
+<pre><code># 1. Appairage : Réglages TV &gt; Appairer un appareil, puis le code à 6 chiffres
+GLOWUP_HOST=192.168.1.50 node tools/glowup.mjs pair 123456
+# 2. Garde le token renvoyé dans ton environnement (ne le commite pas)
+export GLOWUP_HOST=192.168.1.50 GLOWUP_TOKEN=...
+node tools/glowup.mjs status
+node tools/glowup.mjs toast "Le café est prêt" mdi:bell 6
+node tools/glowup.mjs set garage '{"text":"Porte ouverte","icon":"mdi:garage-open","color":"warning"}' 1800
+node tools/glowup.mjs layout aura
+node tools/glowup.mjs demo</code></pre>
+<p>En module :</p>
+<pre><code>import { GlowUp } from "./tools/glowup.mjs";
+const tv = new GlowUp("192.168.1.50", process.env.GLOWUP_TOKEN);
+console.log(await tv.info());
+await tv.setWidget("imprimante_1", { label: "Bambu 1", value: 62, text: "reste 1 h 34", detail: "couche 142/230" });</code></pre>
+
+<h2 id="limites">Limites à connaître</h2>
+<div class="tw"><table>
+<tr><th>Corps JSON</th><td>64 Ko au plus, imbrication 32 niveaux</td></tr>
+<tr><th>Débit</th><td>20 requêtes/s par client, au-delà <code>429</code></td></tr>
+<tr><th>Image d'un widget</th><td>1 Mo au plus (base64), décodée sur la TV</td></tr>
+<tr><th>TTL</th><td>7 jours au plus ; HA ne renvoie un contenu identique qu'à la moitié du <code>ttl</code></td></tr>
+<tr><th>Toast / lancement d'app</th><td>accueil affiché seulement : sinon <code>shown: false</code> ou <code>409 blocked_by_android</code> (Shield, Android 10+)</td></tr>
+<tr><th>Dock</th><td>1 à 12 apps</td></tr>
+<tr><th>Pas dans l'API</th><td>commande shell, installation d'app, lecture d'écran, simulation de touches</td></tr>
+<tr><th>Réseau</th><td>local seulement ; aucun en-tête CORS et <code>Host</code> vérifié, donc pas d'appel depuis une page web</td></tr>
+<tr><th>Pas encore</th><td><code>glowup.set_wallpaper</code>, événement <code>glowup_widget_pressed</code></td></tr>
+</table></div>
+<p style="margin-top:28px;font-size:14px">Sources : <code>README.md</code> et <code>services.yaml</code> de ce dépôt ; docs <code>02-api-launcher</code>, <code>03-config</code>, <code>04-integration-ha</code> de glowup-tv.</p>
+</main>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const widgets = {}; // aperçu : id -> {line, color, bar?, label?, value?, text?}
+const KINDS = {
+  chip:     {label:"Bulle (chip)",  svc:"set_widget", fields:{widget:["ID du widget","garage"],text:["Texte","Porte du garage ouverte"],icon:["Icône","mdi:garage-open"],color:["Couleur","warning","color"],ttl:["TTL (s)","1800","number"]}},
+  stat:     {label:"Valeur (stat)", svc:"set_widget", fields:{widget:["ID du widget","temp_salon"],value:["Valeur","21.4"],unit:["Unité","°"],label:["Libellé","Salon"],secondary:["Secondaire","Humidité 48 %"],trend:["Tendance","flat","trend"],ttl:["TTL (s)","1800","number"]}},
+  progress: {label:"Progression",   svc:"set_widget", fields:{widget:["ID du widget","imprimante_1"],label:["Libellé","Bambu 1"],value:["Valeur 0-100","62","number"],text:["Texte","reste 1 h 34 · fin 21:48"],detail:["Détail (Aura)","Support caméra · couche 142/230"],ttl:["TTL (s)","1800","number"]}},
+  list:     {label:"Liste",         svc:"set_widget", fields:{widget:["ID du widget","agenda"],items:["Éléments (texte;secondaire par ligne)","Dentiste;14:30\nCourses;17:00","area"],ttl:["TTL (s)","1800","number"]}},
+  toast:    {label:"Toast",         svc:"toast",      fields:{text:["Texte","Le café est prêt"],icon:["Icône","mdi:bell"],seconds:["Secondes (1-30)","6","number"]}},
+  clear:    {label:"Vider",         svc:"clear_widget",fields:{widget:["ID du widget","garage"]}},
+  layout:   {label:"Mise en page",  svc:"set_layout", fields:{layout:["Mise en page","aura","layout"]}},
+};
+const SEL = {color:["accent","ok","warning","alert","muted"],trend:["flat","up","down"],layout:["aura","epure","widgets"]};
+const COL = {warning:"#F2B24C",alert:"#FF6B6B",ok:"#7FD1B9",muted:"#8896B0",accent:"#7FD8FF"};
+let kind = "chip", fmt = "ha";
+
+const tab = (box, items, cur, cb) => { box.innerHTML = ""; items.forEach(([k,l]) => { const b = document.createElement("button"); b.type="button"; b.textContent=l; b.className = k===cur?"on":""; b.setAttribute("role","tab"); b.setAttribute("aria-selected",k===cur); b.onclick=()=>cb(k); box.append(b); }); };
+
+function drawForm() {
+  const f = $("#f"); f.innerHTML = "";
+  for (const [k,[lab,def,type]] of Object.entries(KINDS[kind].fields)) {
+    const l = document.createElement("label"); l.textContent = lab;
+    let el;
+    if (SEL[type]) { el = document.createElement("select"); SEL[type].forEach(o => el.add(new Option(o,o))); el.value = def; }
+    else if (type==="area") { el = document.createElement("textarea"); el.rows = 3; el.value = def; }
+    else { el = document.createElement("input"); el.value = def; if (type==="number") el.inputMode="numeric"; }
+    el.name = k; l.append(el); f.append(l);
+  }
+}
+
+function data() {
+  const d = {};
+  for (const el of $("#f").elements) {
+    let v = el.value.trim(); if (v === "") continue;
+    if (el.name === "items") v = v.split("\n").filter(Boolean).map(r => { const [text, secondary] = r.split(";"); return secondary ? {text, secondary} : {text}; });
+    else if (["ttl","seconds","value"].includes(el.name) && v !== "" && !isNaN(v)) v = Number(v);
+    d[el.name] = v;
+  }
+  return d;
+}
+
+const q = (s) => `'${s.replace(/'/g, "'\\''")}'`;
+const yaml = (o) => Object.entries(o).map(([k,v]) => `  ${k}: ${typeof v==="string" && /[:#\[{]|^\s|^\d/.test(v) ? JSON.stringify(v) : typeof v==="object" ? JSON.stringify(v) : v}`).join("\n");
+
+function render() {
+  const d = data(), svc = KINDS[kind].svc, id = d.widget;
+  const body = {...d}; delete body.widget;
+  const api = {
+    set_widget:   ["PUT", `/state/widgets/${id}`, body],
+    clear_widget: ["DELETE", `/state/widgets/${id}`],
+    toast:        ["POST", "/actions/toast", body],
+    set_layout:   ["PATCH", "/config", {layout: d.layout}],
+  }[svc];
+  const { ttl, ...content } = body;
+  const cli = {
+    set_widget:   `node tools/glowup.mjs set ${id} ${q(JSON.stringify(content))}${ttl !== undefined ? " " + ttl : ""}`,
+    clear_widget: `node tools/glowup.mjs clear ${id}`,
+    toast:        `node tools/glowup.mjs toast ${q(d.text || "")}${d.icon ? " " + d.icon : ""}${d.seconds ? " " + d.seconds : ""}`,
+    set_layout:   `node tools/glowup.mjs layout ${d.layout}`,
+  }[svc];
+  const ct = api[0] === "PATCH" ? "application/merge-patch+json" : "application/json";
+  const curl = `curl -X ${api[0]} -H "Authorization: Bearer $TOKEN" ${api[2] ? `-H "Content-Type: ${ct}" -d ${q(JSON.stringify(api[2]))} ` : ""}http://<ip-tv>:8765/api/v1${api[1]}`;
+  return {
+    ha:   `action: glowup.${svc}\ndata:\n${yaml(d)}`,
+    js:   cli,
+    curl,
+    json: JSON.stringify(api[2] ?? {}, null, 2),
+  }[fmt];
+}
+
+function preview() {
+  const b = $("#pv-bubbles"), r = $("#pv-bars"); b.innerHTML = r.innerHTML = "";
+  const all = Object.values(widgets);
+  const isAlert = (w) => ["warning","alert"].includes(w.color);
+  const bubbles = all.filter(w => !w.bar);
+  [...bubbles.filter(isAlert), ...bubbles.filter(w => !isAlert(w))].slice(0,6).forEach(w => {
+    const e = document.createElement("div"); e.className = "bubble" + (isAlert(w) ? " alert" : ""); e.style.setProperty("--c", COL[w.color] || w.color || COL.accent);
+    e.innerHTML = "<i></i><span></span>"; e.lastChild.textContent = w.line; b.append(e);
+  });
+  all.filter(w => w.bar).slice(0,2).forEach(w => {
+    const e = document.createElement("div"); e.className = "bar";
+    e.innerHTML = "<span></span><div class='trk'><b></b></div><em></em>";
+    e.children[0].textContent = w.label; e.querySelector("b").style.width = Math.max(0, Math.min(100, w.value)) + "%";
+    e.children[2].textContent = (w.value >= 100 ? "Terminé" : w.value + " %") + (w.text ? " · " + w.text : ""); r.append(e);
+  });
+}
+
+function sync() {
+  const d = data(), id = d.widget;
+  if (kind === "chip") widgets[id] = {line: d.text || "", color: d.color};
+  else if (kind === "stat") widgets[id] = {line: `${d.value ?? ""}${d.unit || ""} · ${d.label || ""}`, color: "accent"};
+  else if (kind === "progress") widgets[id] = {line: "", bar: true, label: d.label || "", value: d.value || 0, text: d.text || ""};
+  else if (kind === "list") widgets[id] = {line: d.items?.[0]?.text || "", color: "accent"};
+  else if (kind === "clear") delete widgets[id];
+  else if (kind === "toast") { const t = $("#pv-toast"); t.textContent = d.text || ""; t.classList.remove("hide"); clearTimeout(sync.t); sync.t = setTimeout(() => t.classList.add("hide"), (d.seconds || 6) * 1000); }
+  preview();
+  $("#out").textContent = render();
+}
+
+function draw() {
+  tab($("#kinds"), Object.entries(KINDS).map(([k,v]) => [k, v.label]), kind, k => { kind = k; draw(); });
+  tab($("#outTabs"), [["ha","Home Assistant"],["js","Script JS"],["curl","curl"],["json","JSON"]], fmt, k => { fmt = k; draw(); });
+  drawForm(); sync();
+}
+
+$("#f").addEventListener("input", sync);
+$("#copy").onclick = async (e) => { try { await navigator.clipboard.writeText($("#out").textContent); e.target.textContent = "Copié"; } catch { e.target.textContent = "Copie manuelle"; } setTimeout(() => e.target.textContent = "Copier", 1500); };
+
+// Aperçu de départ
+Object.assign(widgets, {
+  garage:       {line:"Porte du garage ouverte", color:"warning"},
+  colis:        {line:"Colis livré", color:"accent"},
+  lave_linge:   {line:"Lave-linge · 42 min", color:"accent"},
+  imprimante_1: {bar:true, label:"Bambu 1", value:62, text:"reste 1 h 34"},
+  imprimante_2: {bar:true, label:"Bambu 2", value:18, text:"reste 3 h 05"},
+});
+draw();
+</script>
+</body>
+</html>

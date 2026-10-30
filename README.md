@@ -81,6 +81,35 @@ encore valables.
 allumées, impression 3D, et Widgets le jour / Épuré le soir. Les entités sont des exemples à remplacer par les
 tiennes ; les widgets (`meteo`, `garage`…) doivent exister dans la config de la TV.
 
+## Carte Lovelace (JS)
+
+[`dist/glowup-card.js`](dist/glowup-card.js) : une carte pour le tableau de bord. Elle montre l'état de la TV (en ligne,
+version), change la mise en page (Épuré, Widgets, Aura si la TV la propose), choisit le fond, envoie un toast, pousse ou
+vide un widget, et peut avoir des boutons de widgets préparés.
+
+1. Copie `dist/glowup-card.js` dans `config/www/` de Home Assistant.
+2. **Paramètres, Tableaux de bord, ⋮, Ressources, Ajouter** : URL `/local/glowup-card.js`, type **Module JavaScript**
+   (mode avancé de ton profil actif). Recharge la page sans cache.
+3. Ajoute la carte en YAML :
+
+```yaml
+type: custom:glowup-card
+title: Salon
+widgets:                       # facultatif : un bouton = un widget poussé
+  - {label: Garage, widget: garage, text: Porte du garage ouverte, icon: "mdi:garage-open", color: warning, ttl: 1800}
+# device_id: …                 # seulement avec plusieurs TV
+```
+
+Les entités sont trouvées toutes seules ; sinon donne-les dans `entities:` (`online`, `version`, `layout`, `wallpaper`).
+
+## Script Node et page de guide
+
+- [`tools/glowup.mjs`](tools/glowup.mjs) : client et CLI Node 18+ qui parlent directement à la TV (hors Home Assistant).
+  `GLOWUP_HOST=<ip> node tools/glowup.mjs pair <code>`, puis `GLOWUP_TOKEN=… node tools/glowup.mjs status`
+  (aussi `toast`, `set`, `clear`, `layout`, `patch`, `launch`, `demo`).
+- [`docs/index.html`](docs/index.html) : page de guide (emplacements de notifications par mise en page, champs envoyables,
+  générateur de commandes). À ouvrir dans un navigateur.
+
 ## Pas encore là
 
 `glowup.set_wallpaper` (fond temporaire) et l'événement `glowup_widget_pressed` (widget cliquable) viendront plus tard.
