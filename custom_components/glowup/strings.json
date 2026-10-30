@@ -38,7 +38,7 @@
     "select": {
       "layout": {
         "name": "Layout",
-        "state": {"epure": "Minimal", "widgets": "Widgets"}
+        "state": {"epure": "Minimal", "widgets": "Widgets", "aura": "Aura"}
       },
       "wallpaper": {"name": "Wallpaper"}
     }
@@ -57,6 +57,7 @@
         "unit": {"name": "Unit", "description": "Stat unit."},
         "label": {"name": "Label", "description": "Stat or progress label."},
         "secondary": {"name": "Secondary", "description": "Secondary text."},
+        "detail": {"name": "Detail", "description": "Second line of a progress widget (Aura)."},
         "trend": {"name": "Trend", "description": "up, down or flat."},
         "items": {"name": "Items", "description": "List items (text, secondary, icon)."},
         "caption": {"name": "Caption", "description": "Image caption."},
@@ -105,6 +106,16 @@
         "package": {"name": "Package", "description": "Android package name."},
         "device_id": {"name": "TV", "description": "TV(s) to target; all by default."}
       }
+    },
+    "go_home": {
+      "name": "Go home",
+      "description": "Bring the TV back to the home screen.",
+      "fields": {"device_id": {"name": "TV", "description": "TV(s) to target; all by default."}}
+    },
+    "get_data": {
+      "name": "Get data",
+      "description": "Read the TV info, config, pushed state, launchable apps and wallpapers.",
+      "fields": {"device_id": {"name": "TV", "description": "TV(s) to target; all by default."}}
     }
   }
 }

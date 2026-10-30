@@ -44,6 +44,8 @@ Sans cible, tous les GlowUp configurés sont visés ; avec plusieurs TV, ajoute 
 | `glowup.patch_config` | modification partielle de la config (JSON Merge Patch) |
 | `glowup.toast` | message de quelques secondes sur l'accueil |
 | `glowup.launch_app` | ouvre une app installée (quand l'accueil est affiché) |
+| `glowup.go_home` | ramène la TV sur l'accueil |
+| `glowup.get_data` | lit infos, config, état poussé, apps lançables et fonds (réponse de service, pour les scripts et la carte) |
 
 Le contenu dépend du type du widget :
 
@@ -51,7 +53,7 @@ Le contenu dépend du type du widget :
 |---|---|
 | `chip` | `text`, `icon`, `color` (`accent`, `ok`, `warning`, `alert`, `muted` ou `#RRGGBB`) |
 | `stat` | `value`, `label`, `unit`, `secondary`, `trend` (`up`, `down`, `flat`) |
-| `progress` | `label`, `value` (0 à 100), `text` |
+| `progress` | `label`, `value` (0 à 100), `text`, `detail` (2e ligne, Aura) |
 | `list` | `items` : `[{text, secondary, icon}]` |
 | `image` | `camera_entity` (instantané envoyé, 1 Mo au plus), `caption` |
 
@@ -83,9 +85,24 @@ tiennes ; les widgets (`meteo`, `garage`…) doivent exister dans la config de l
 
 ## Carte Lovelace (JS)
 
-[`dist/glowup-card.js`](dist/glowup-card.js) : une carte pour le tableau de bord. Elle montre l'état de la TV (en ligne,
-version), change la mise en page (Épuré, Widgets, Aura si la TV la propose), choisit le fond, envoie un toast, pousse ou
-vide un widget, et peut avoir des boutons de widgets préparés.
+[`dist/glowup-card.js`](dist/glowup-card.js) : une carte pour le tableau de bord qui lit et pilote tout ce que l'API de
+la TV expose. Dans l'éditeur visuel (« Modifier la carte »), un interrupteur par section permet de ne garder que ce que
+tu veux (par exemple seulement les apps, ou seulement l'envoi de messages) :
+
+| Section | Contenu |
+|---|---|
+| État | en ligne, version du launcher |
+| Mise en page | boutons pour toutes les mises en page de la TV (dont Aura) |
+| Fond | choix parmi les fonds stockés sur la TV |
+| Applications | toutes les apps lançables (filtre, un clic pour lancer), bouton Accueil |
+| Message | toast avec icône et durée |
+| Widget | envoi d'un widget déclaré (champs selon son type, TTL), boutons préparés (`widgets:` en YAML) |
+| Widgets affichés | ce qui est poussé en ce moment, avec « Vider » |
+| Réglages | couleur d'accent, voile Aura, patch JSON libre |
+| Infos | appareil, Android, écran, capacités, emplacements utilisés par zone, config et état bruts |
+
+Les données viennent du service `glowup.get_data` (intégration 0.3.0 ou plus, redémarre Home Assistant après la mise à
+jour).
 
 1. Copie `dist/glowup-card.js` dans `config/www/` de Home Assistant.
 2. **Paramètres, Tableaux de bord, ⋮, Ressources, Ajouter** : URL `/local/glowup-card.js`, type **Module JavaScript**
@@ -95,12 +112,12 @@ vide un widget, et peut avoir des boutons de widgets préparés.
 ```yaml
 type: custom:glowup-card
 title: Salon
+show_apps: true                # show_status, show_layout, show_wallpaper, show_apps, show_toast, show_widget,
+show_widget: false             # show_live, show_config, show_info : true par défaut, false pour masquer
 widgets:                       # facultatif : un bouton = un widget poussé
   - {label: Garage, widget: garage, text: Porte du garage ouverte, icon: "mdi:garage-open", color: warning, ttl: 1800}
 # device_id: …                 # seulement avec plusieurs TV
 ```
-
-Les entités sont trouvées toutes seules ; sinon donne-les dans `entities:` (`online`, `version`, `layout`, `wallpaper`).
 
 ## Script Node et page de guide
 

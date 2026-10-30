@@ -69,6 +69,16 @@ class GlowUpClient:
     async def wallpapers(self) -> list[dict[str, Any]]:
         return (await self._request("GET", "/wallpapers")).get("wallpapers", [])
 
+    async def state(self) -> Any:
+        return await self._request("GET", "/state")
+
+    async def apps(self) -> list[dict[str, Any]]:
+        data = await self._request("GET", "/apps")
+        return data.get("apps", []) if isinstance(data, dict) else data
+
+    async def home(self) -> Any:
+        return await self._request("POST", "/actions/home", {})
+
     async def patch_config(self, patch: dict[str, Any]) -> Any:
         return await self._request("PATCH", "/config", patch, ctype="application/merge-patch+json")
 

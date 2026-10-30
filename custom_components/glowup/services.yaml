@@ -16,6 +16,7 @@ set_widget:
     unit: {selector: {text: {}}}
     label: {selector: {text: {}}}
     secondary: {selector: {text: {}}}
+    detail: {selector: {text: {}}}
     trend:
       selector: {select: {options: [up, down, flat]}}
     items:
@@ -45,7 +46,7 @@ set_layout:
   fields:
     layout:
       required: true
-      selector: {select: {options: [epure, widgets]}}
+      selector: {select: {options: [epure, widgets, aura]}}
     device_id:
       selector: {device: {integration: glowup, multiple: true}}
 toast:
@@ -66,5 +67,13 @@ launch_app:
       required: true
       example: com.netflix.ninja
       selector: {text: {}}
+    device_id:
+      selector: {device: {integration: glowup, multiple: true}}
+go_home:
+  fields:
+    device_id:
+      selector: {device: {integration: glowup, multiple: true}}
+get_data:
+  fields:
     device_id:
       selector: {device: {integration: glowup, multiple: true}}

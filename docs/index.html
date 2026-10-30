@@ -169,7 +169,8 @@ button.on{border-color:var(--accent);color:var(--accent)}
 <tr><th><code>glowup.patch_config</code></th><td><code>PATCH /config</code></td><td>modification partielle de la config</td></tr>
 <tr><th><code>glowup.toast</code></th><td><code>POST /actions/toast</code></td><td>message passager</td></tr>
 <tr><th><code>glowup.launch_app</code></th><td><code>POST /actions/launch</code></td><td>ouvre une app (accueil affiché)</td></tr>
-<tr><th>(script JS seulement)</th><td><code>POST /actions/home</code></td><td>revient à l'accueil</td></tr>
+<tr><th><code>glowup.go_home</code></th><td><code>POST /actions/home</code></td><td>revient à l'accueil</td></tr>
+<tr><th><code>glowup.get_data</code></th><td><code>GET /info /config /state /apps /wallpapers</code></td><td>lit tout (réponse de service), utilisé par la carte Lovelace</td></tr>
 </table></div>
 <div class="note">Dans l'interface HA, le sélecteur de <code>glowup.set_layout</code> ne propose que <code>epure</code> et <code>widgets</code> (voir <code>services.yaml</code>) : pour Aura, tape <code>aura</code> en mode YAML ou utilise l'entité « Mise en page ». À vérifier sur ta TV : la liste <code>layouts</code> de <code>/info</code> dit ce qu'elle accepte.</div>
 

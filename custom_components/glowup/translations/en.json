@@ -38,7 +38,7 @@
     "select": {
       "layout": {
         "name": "Layout",
-        "state": {"epure": "Minimal", "widgets": "Widgets"}
+        "state": {"epure": "Minimal", "widgets": "Widgets", "aura": "Aura"}
       },
       "wallpaper": {"name": "Wallpaper"}
     }
@@ -49,6 +49,8 @@
     "patch_config": {"name": "Patch config", "description": "Apply a JSON Merge Patch to the TV config."},
     "set_layout": {"name": "Set layout", "description": "Switch the home layout."},
     "toast": {"name": "Show message", "description": "Show a short message on the TV."},
-    "launch_app": {"name": "Launch app", "description": "Launch an app (the TV must be on the home screen)."}
+    "launch_app": {"name": "Launch app", "description": "Launch an app (the TV must be on the home screen)."},
+    "go_home": {"name": "Go home", "description": "Bring the TV back to the home screen."},
+    "get_data": {"name": "Get data", "description": "Read the TV info, config, pushed state, launchable apps and wallpapers."}
   }
 }

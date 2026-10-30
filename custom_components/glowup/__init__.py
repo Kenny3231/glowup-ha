@@ -8,7 +8,7 @@ import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.const import CONF_HOST, CONF_PORT, CONF_TOKEN, Platform
-from homeassistant.core import HomeAssistant, ServiceCall
+from homeassistant.core import HomeAssistant, ServiceCall, ServiceResponse, SupportsResponse
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import config_validation as cv, device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -18,7 +18,7 @@ from .const import DOMAIN, MAX_IMAGE_BYTES
 from .coordinator import GlowUpCoordinator
 
 PLATFORMS = [Platform.BINARY_SENSOR, Platform.SENSOR, Platform.SELECT]
-CONTENT_KEYS = ("text", "icon", "color", "value", "unit", "label", "secondary", "trend", "items", "caption")
+CONTENT_KEYS = ("text", "icon", "color", "value", "unit", "label", "secondary", "trend", "items", "caption", "detail")
 
 TARGET = {vol.Optional("device_id"): vol.All(cv.ensure_list, [cv.string]), vol.Optional("config_entry_id"): cv.string}
 SET_WIDGET = vol.Schema(
@@ -42,6 +42,7 @@ TOAST = vol.Schema(
     }
 )
 LAUNCH = vol.Schema({**TARGET, vol.Required("package"): cv.string})
+TARGET_ONLY = vol.Schema(TARGET)
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -132,7 +133,33 @@ def _register_services(hass: HomeAssistant) -> None:
     async def launch_app(call: ServiceCall) -> None:
         await _each(hass, call, lambda c: c.client.launch(call.data["package"]))
 
+    async def go_home(call: ServiceCall) -> None:
+        await _each(hass, call, lambda c: c.client.home())
+
+    async def get_data(call: ServiceCall) -> ServiceResponse:
+        """Live read of everything the TV API exposes, one entry per TV (used by the Lovelace card)."""
+        tvs = []
+        for c in _targets(hass, call):
+            tv: dict[str, Any] = {"entry_id": c.config_entry.entry_id, "title": c.config_entry.title, "errors": {}}
+            for key, fn in (
+                ("info", c.client.info),
+                ("config", c.client.config),
+                ("state", c.client.state),
+                ("apps", c.client.apps),
+                ("wallpapers", c.client.wallpapers),
+            ):
+                try:
+                    tv[key] = await fn()
+                except GlowUpError as err:
+                    tv[key] = None
+                    tv["errors"][key] = str(err)
+            tvs.append(tv)
+        return {"tvs": tvs}
+
+    hass.services.async_register(DOMAIN, "get_data", get_data, schema=TARGET_ONLY, supports_response=SupportsResponse.ONLY)
+
     for name, fn, schema in (
+        ("go_home", go_home, TARGET_ONLY),
         ("set_widget", set_widget, SET_WIDGET),
         ("clear_widget", clear_widget, CLEAR_WIDGET),
         ("patch_config", patch_config, PATCH_CONFIG),

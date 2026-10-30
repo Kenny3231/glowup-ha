@@ -38,7 +38,7 @@
     "select": {
       "layout": {
         "name": "Mise en page",
-        "state": {"epure": "Épuré", "widgets": "Widgets"}
+        "state": {"epure": "Épuré", "widgets": "Widgets", "aura": "Aura"}
       },
       "wallpaper": {"name": "Fond"}
     }
@@ -49,6 +49,8 @@
     "patch_config": {"name": "Modifier la config", "description": "Applique un JSON Merge Patch à la config de la TV."},
     "set_layout": {"name": "Changer la mise en page", "description": "Change la mise en page de l'accueil."},
     "toast": {"name": "Afficher un message", "description": "Affiche un court message sur la TV."},
-    "launch_app": {"name": "Lancer une app", "description": "Lance une app (la TV doit être sur l'accueil)."}
+    "launch_app": {"name": "Lancer une app", "description": "Lance une app (la TV doit être sur l'accueil)."},
+    "go_home": {"name": "Retour à l'accueil", "description": "Ramène la TV sur l'écran d'accueil."},
+    "get_data": {"name": "Lire les données", "description": "Lit les infos, la config, l'état poussé, les apps lançables et les fonds de la TV."}
   }
 }
