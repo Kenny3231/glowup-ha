@@ -1,6 +1,6 @@
 /* Carte Lovelace GlowUp TV : tout ce que l'API de la TV permet de lire et d'envoyer.
  *
- * Ressource : /local/glowup-card.js (type : module). L'éditeur visuel permet d'activer ou non chaque section.
+ * Chargée automatiquement par l'intégration (aucune ressource à ajouter). L'éditeur visuel active ou non chaque section.
  * Les données (infos, config, état, apps, fonds) viennent du service glowup.get_data (intégration 0.3.0 ou plus).
  *
  *   type: custom:glowup-card

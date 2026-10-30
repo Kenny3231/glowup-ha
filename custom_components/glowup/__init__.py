@@ -2,16 +2,20 @@
 from __future__ import annotations
 
 import base64
+from pathlib import Path
 from typing import Any
 
 import voluptuous as vol
 
+from homeassistant.components.frontend import add_extra_js_url
+from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.const import CONF_HOST, CONF_PORT, CONF_TOKEN, Platform
 from homeassistant.core import HomeAssistant, ServiceCall, ServiceResponse, SupportsResponse
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import config_validation as cv, device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.loader import async_get_integration
 
 from .api import GlowUpClient, GlowUpError
 from .const import DOMAIN, MAX_IMAGE_BYTES
@@ -45,7 +49,22 @@ LAUNCH = vol.Schema({**TARGET, vol.Required("package"): cv.string})
 TARGET_ONLY = vol.Schema(TARGET)
 
 
+CARD_URL = f"/{DOMAIN}/glowup-card.js"
+
+
+async def _register_card(hass: HomeAssistant) -> None:
+    """Serve the Lovelace card from the integration and load it on every dashboard (no manual resource)."""
+    if hass.data.get(f"{DOMAIN}_card"):
+        return
+    hass.data[f"{DOMAIN}_card"] = True
+    path = Path(__file__).parent / "www" / "glowup-card.js"
+    await hass.http.async_register_static_paths([StaticPathConfig(CARD_URL, str(path), False)])
+    version = (await async_get_integration(hass, DOMAIN)).version
+    add_extra_js_url(hass, f"{CARD_URL}?v={version}")
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    await _register_card(hass)
     client = GlowUpClient(async_get_clientsession(hass), entry.data[CONF_HOST], entry.data[CONF_PORT], entry.data[CONF_TOKEN])
     coordinator = GlowUpCoordinator(hass, entry, client)
     await coordinator.async_config_entry_first_refresh()

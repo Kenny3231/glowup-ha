@@ -85,7 +85,7 @@ tiennes ; les widgets (`meteo`, `garage`…) doivent exister dans la config de l
 
 ## Carte Lovelace (JS)
 
-[`dist/glowup-card.js`](dist/glowup-card.js) : une carte pour le tableau de bord qui lit et pilote tout ce que l'API de
+[`glowup-card.js`](custom_components/glowup/www/glowup-card.js) : une carte pour le tableau de bord qui lit et pilote tout ce que l'API de
 la TV expose. Dans l'éditeur visuel (« Modifier la carte »), un interrupteur par section permet de ne garder que ce que
 tu veux (par exemple seulement les apps, ou seulement l'envoi de messages) :
 
@@ -104,10 +104,9 @@ tu veux (par exemple seulement les apps, ou seulement l'envoi de messages) :
 Les données viennent du service `glowup.get_data` (intégration 0.3.0 ou plus, redémarre Home Assistant après la mise à
 jour).
 
-1. Copie `dist/glowup-card.js` dans `config/www/` de Home Assistant.
-2. **Paramètres, Tableaux de bord, ⋮, Ressources, Ajouter** : URL `/local/glowup-card.js`, type **Module JavaScript**
-   (mode avancé de ton profil actif). Recharge la page sans cache.
-3. Ajoute la carte en YAML :
+1. Rien à copier ni à déclarer : l'intégration (0.4.0 ou plus) sert la carte elle-même et la charge sur tous les
+   tableaux de bord. Après la mise à jour par HACS, redémarre Home Assistant et recharge la page sans cache.
+2. **Modifier le tableau de bord, Ajouter une carte, GlowUp TV**, ou colle ce YAML :
 
 ```yaml
 type: custom:glowup-card
